@@ -1,41 +1,42 @@
 pipeline {
-    agent {
-        docker {
-            image 'cimg/python:3.11.4'
-        }
-    }
-    environment {
-        WORKING_DIRECTORY = '~/repo'
-    }
+    agent any
+    
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                script {
+                    checkout scm
+                }
             }
         }
+        
         stage('Build') {
             steps {
                 script {
-                    sh """
-                    cd ${WORKING_DIRECTORY}
-                    python3 -m venv venv
-                    source venv/bin/activate
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
-                    """
+                    sh 'mvn clean package'
                 }
             }
         }
-        stage('Run Tests') {
+        
+        stage('Test') {
             steps {
                 script {
-                    sh """
-                    cd ${WORKING_DIRECTORY}
-                    source venv/bin/activate
-                    python3 -m pytest
-                    """
                 }
             }
+        }
+    }
+    
+    post {
+        always {
+            junit 'target/surefire-reports/**/*.xml'
+        }
+        
+        success {
+            echo 'Build and tests passed!'
+        }
+        
+        failure {
+            echo 'Build or tests failed!'
         }
     }
 }
