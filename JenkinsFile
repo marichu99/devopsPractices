@@ -9,7 +9,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'python3 -m venv chief'
+                sh 'python3 -m venv'
                 sh '. chief/bin/activate && pip install --upgrade pip && pip install -r requirements.txt'
             }
         }
