@@ -1,6 +1,6 @@
 def main():
     print("Welcome to DEVOPS")
-    print(hello(1,4))
+    print(hello(2,4))
 def hello(a,b):
     return a+b
 def subtract(x,y):
